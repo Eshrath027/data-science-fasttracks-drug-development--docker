@@ -1,0 +1,164 @@
+{% load static %}
+{% include 'inner-page.html' %}
+{% block content %}
+{% comment %} <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drug Interaction Checker</title>
+</head>
+<body>
+    <h1>Drug Interaction Checker</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="drug1">Enter the first drug name:</label><br>
+        <input type="text" id="drug1" name="drug1"><br>
+        <label for="drug2">Enter the second drug name:</label><br>
+        <input type="text" id="drug2" name="drug2"><br>
+        <input type="submit" value="Check">
+    </form>
+    {% if response %}
+        <h2>Interaction Result:</h2>
+        <p>{{ response }}</p>
+    {% endif %}
+</body>
+</html>  {% endcomment %}
+
+
+{% comment %} <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drug Interaction Checker</title>
+    <style>
+        /* Add CSS styles for the container */
+        .s-container {
+            max-width: 900px; /* Adjust max-width as needed */
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+        /* Add any additional styling for form elements or result display */
+        form {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"],
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        h2 {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="s-container">
+        <h1>Drug Interaction Checker</h1>
+        <form method="post">
+            {% csrf_token %}
+            <label for="drug1">Enter the first drug name:</label>
+            <input type="text" id="drug1" name="drug1">
+            <label for="drug2">Enter the second drug name:</label>
+            <input type="text" id="drug2" name="drug2">
+            <input type="submit" value="Check">
+        </form>
+        {% if response %}
+            <h2>Interaction Result:</h2>
+            <p>{{ response }}</p>
+        {% endif %}
+    </div>
+</body>
+</html> {% endcomment %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drug Interaction Checker</title>
+    <br>
+    <style>
+        /* Add your CSS styles here */
+        .s-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        input[type="text"],
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        h2 {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="s-container">
+        <h1>Drug Interaction Checker</h1>
+        <form id="drugForm" method="post">
+            {% csrf_token %}
+            <label for="drug1">Enter the first drug name:</label>
+            <input type="text" id="drug1" name="drug1" value="{{ drug1 }}">
+            <label for="drug2">Enter the second drug name:</label>
+            <input type="text" id="drug2" name="drug2" value="{{ drug2 }}">
+            <input type="submit" value="Check">
+        </form>
+        {% if response_text %}
+            <h2>Interaction Result:</h2>
+            <p>{{ response_text }}</p>
+        {% endif %}
+    </div>
+
+    <script>
+        // Clear form fields upon page refresh
+        
+            document.getElementById("drugForm").reset();
+    
+    </script>
+</body>
+</html>
+
+
+
+{% endblock %}
+{% include 'footer.html' %}

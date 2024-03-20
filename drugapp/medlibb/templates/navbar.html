@@ -1,0 +1,66 @@
+{% load static%}
+
+<header id="header" class="fixed-top">
+    <div class="container d-flex align-items-center">
+
+      <h1 class="logo me-auto"><a href="{% url 'index' %}">MediLib</a></h1>
+      <!-- Uncomment below if you prefer to use an image logo -->
+      <!-- <a href="{% url 'index' %}" class="logo me-auto"><img src="{% static 'assets/img/logo.png' %}" alt="" class="img-fluid"></a>-->
+
+      <nav id="navbar" class="navbar order-last order-lg-0">
+        <ul>
+          <li><a class="nav-link scrollto active" href="{% url 'index'%}">Home</a></li>
+          <li><a class="nav-link scrollto" href="#about">About</a></li>
+          <li><a class="nav-link scrollto" href="#services">Services</a></li>
+          {% comment %} <li><a class="nav-link scrollto" href="#departments">Departments</a></li> {% endcomment %}
+          <li><a class="nav-link scrollto" href="#doctors">Team</a></li>
+          <li class="dropdown"><a href="#"><span>Modules</span> <i class="bi bi-chevron-down"></i></a>
+            <ul>
+              {% if user.is_authenticated %}
+              <li><a href="{% url 'base'%}">Recent articles and Summary </a></li>
+              {% comment %} <li class="dropdown"><a href="#"><span>Deep Drop Down</span> <i class="bi bi-chevron-right"></i></a>
+                <ul>
+                  <li><a href="#">Deep Drop Down 1</a></li>
+                  <li><a href="#">Deep Drop Down 2</a></li>
+                  <li><a href="#">Deep Drop Down 3</a></li>
+                  <li><a href="#">Deep Drop Down 4</a></li>
+                  <li><a href="#">Deep Drop Down 5</a></li>
+                </ul>
+              </li> {% endcomment %}
+              
+              <li><a href="{% url 'analysis'%}">Analysis and Recommendation</a></li>
+              <li><a href="{% url 'ddi'%}">Drug-Drug Interaction</a></li>
+              <li><a href="{% url 'chatbot'%}">chatbot</a></li>
+              {% else %}	
+              <li><a href="{% url 'login'%}">Recent articles and Summary </a></li>
+              {% comment %} <li class="dropdown"><a href="#"><span>Deep Drop Down</span> <i class="bi bi-chevron-right"></i></a>
+                <ul>
+                  <li><a href="#">Deep Drop Down 1</a></li>
+                  <li><a href="#">Deep Drop Down 2</a></li>
+                  <li><a href="#">Deep Drop Down 3</a></li>
+                  <li><a href="#">Deep Drop Down 4</a></li>
+                  <li><a href="#">Deep Drop Down 5</a></li>
+                </ul>
+              </li> {% endcomment %}
+              
+              <li><a href="{% url 'login'%}">Analysis and Recommendation</a></li>
+              <li><a href="{% url 'login'%}">Drug-Drug Interaction</a></li>
+              <li><a href="{% url 'login'%}">chatbot</a></li>
+              {% endif %}
+            </ul>
+          </li>
+          <li><a class="nav-link scrollto" href="#footer">Contact</a></li>
+        </ul>
+        <i class="bi bi-list mobile-nav-toggle"></i>
+      </nav><!-- .navbar -->
+
+      {% comment %} <a href="#appointment" class="appointment-btn scrollto"><span class="d-none d-md-inline">Make an</span> Appointment</a> {% endcomment %}
+      {%if user.is_authenticated %}
+      <a href="{%url 'logout'%}" class="appointment-btn scrollto"><span class="d-none d-md-inline">Logout</span>  </a>
+      {%else %}
+      <a href="{%url 'login'%}" class="appointment-btn scrollto"><span class="d-none d-md-inline">Login</span>  </a>
+      {%endif%}
+
+      
+    </div>
+  </header><!-- End Header -->

@@ -1,0 +1,110 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'loginstatic/fonts/icomoon/style.css' %}">
+    <link rel="stylesheet" href="{% static 'loginstatic/css/owl.carousel.min.css' %}">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'loginstatic/css/bootstrap.min.css' %}">
+
+    <!-- Style -->
+    <link rel="stylesheet" href="{% static 'loginstatic/css/style.css' %}">
+
+    <link rel="icon" type="image/png" href="{% static 'loginstatic/assets/img/favicon.png' %}">
+
+    <title>Login #2</title>
+    <style>
+        .bg {
+            background-image: url('{% static "loginstatic/images/bg_6.jpg" %}'); 
+            height: 70vh;
+            background-size: cover; /* Ensure the image covers the entire container */
+            background-position: center ; /* Center the image within the container */
+        }
+
+        /* Custom styles for the login container */
+        .login-container {
+            background-color: #fff; /* Set background color */
+            border-radius: 10px; /* Adjust border radius */
+            overflow: hidden; /* Hide overflowing content */
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Add box shadow for a subtle effect */
+            padding: 20px; /* Add padding for content */
+        }
+
+        .login-container img {
+            width: 100%; /* Make the image fill the container */
+            height: auto; /* Maintain aspect ratio */
+            max-width: 100%; /* Ensure the image doesn't exceed its original size */
+        }
+
+        /* Adjust spacing and alignment */
+        .container {
+            margin-top: 80px; /* Add space from the top */
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="row">
+         <div class="col-md-6">
+            <!-- Image container -->
+            <div class="bg"></div>
+        </div> 
+        <div class="col-md-6">
+            <!-- Login container -->
+            <div class="login-container">
+                <h3>Login to <strong>MediLib</strong></h3>
+                <p class="mb-4"></p>
+                <form method="POST" action="{% url 'login' %}">
+                    {% csrf_token %}
+                    <div class="form-group first">
+                        <label for="username">Username</label>
+                        <input type="text" class="form-control" placeholder="your-email@gmail.com" id="username" name="username">
+                    </div>
+                    <div class="form-group last mb-3">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" placeholder="Your Password" id="password" name= "password">
+                    </div>
+
+                    <div class="d-flex mb-5 align-items-center">
+                        <label class="control control--checkbox mb-0"><span class="caption">Remember me</span>
+                            <input type="checkbox" checked="checked"/>
+                            <div class="control__indicator"></div>
+                        </label>
+                        <span class="ml-auto"><a href="{% url 'register'%}" class="forgot-pass">Register</a></span>
+                    </div>
+
+                    <input type="submit" value="Log In" class="btn btn-block btn-primary">
+                </form>
+                <br>
+                <div style="color: red;">
+                    {% for message in messages %}
+                    <h6> {{message}}  </h6>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+         
+    </div>
+</div>
+
+
+<script src="{% static 'loginstatic/js/jquery-3.3.1.min.js' %}"></script>
+<script src="{% static 'loginstatic/js/popper.min.js' %}"></script>
+<script src="{% static 'loginstatic/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'loginstatic/js/main.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+Django==5.0.3
+GoogleNews==1.6.13
+GoogleNews==1.6.13
+ipython==8.12.3
+newspaper3k==0.2.8
+nltk==3.8.1
+numpy==1.26.4
+openai==1.14.2
+pandas==2.2.1
+protobuf==5.26.0
+Requests==2.31.0
+transformers==4.38.2

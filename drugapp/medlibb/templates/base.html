@@ -1,0 +1,139 @@
+{% load static %}
+
+{% include 'inner-page.html' %}
+
+{% block content %}
+
+
+<!-- Modified Search Form with Search Icon -->
+
+
+<style>
+    /* General */
+    body {
+        font-family: "Open Sans", sans-serif;
+        color: #444444;
+    }
+
+    a {
+        color: #1977cc;
+        text-decoration: none;
+    }
+
+    a:hover {
+        color: #3291e6;
+        text-decoration: none;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        font-family: "Raleway", sans-serif;
+    }
+
+    /* ... Include other general styles ... */
+
+    /* Search Results Section */
+    {% comment %} .container {
+        margin-top: 40px; /* Adjust as needed */
+    }  {% endcomment %}
+
+    .list-group {
+        list-style: none;
+        padding: 0;
+    }
+
+    .list-group-item {
+        background-color: #f8f9fa; /* Adjust as needed */
+        margin-bottom: 10px;
+        padding: 15px;
+        border-radius: 5px;
+    }
+
+    .list-group-item h4 {
+        color: #1977cc; /* Adjust as needed */
+    }
+
+    .search-input-container {
+        display: flex;
+        margin-top: 10px; /* Adjust as needed */
+    }
+
+    .search-input {
+        padding: 8px 15px;
+        border: 1px solid #1977cc;
+        border-radius: 50px;
+        width: 50%; /* Adjust as needed */
+        font-size: 14px;
+    }
+
+    .search-btn {
+        background: #1977cc;
+        color: #fff;
+        border: none;
+        border-radius: 50px;
+        padding: 8px 20px;
+        margin-left: -50px; /* Adjust as needed */
+        
+        cursor: pointer;
+        transition: 0.3s;
+        font-size: 14px;
+    }
+
+    .search-btn:hover {
+        background: #166ab5;
+        color: #fff;
+    }
+
+    @media (max-width: 768px) {
+        .search-input {
+            width: 60%; /* Adjust as needed */
+        }
+
+        .search-btn {
+            padding: 6px 18px;
+        }
+    }
+</style> 
+<!-- Assuming this is the section where you display search results -->
+<div class="container">
+    <br>
+
+
+    <form method="get" action="{% url 'news_articles_view' %}">
+        {% comment %} <label for="query">Search Medical Articles:</label> {% endcomment %}
+        <div class="search-input-container">
+            <input type="text" name="query" id="query" class="search-input" placeholder="Search Medical Articles">
+            <button type="submit" class="search-btn">Search</button>
+        </div>
+    </form> 
+    <br></br>
+    <h3>Search Results</h3>
+
+    {% if query %}
+        <p>Showing results for: {{ query }}</p>
+    {% endif %}
+    <br>
+    {% if articles %}
+        <ul class="list-group">
+            {% for article in articles %}
+                <li class="list-group-item">
+                    <h4>{{ article.title }}</h4>
+                    <p><strong>Source:</strong> {{ article.source.name }}</p>
+                    <p><strong>Date:</strong> {{ article.publishedAt }}</p>
+                    <p><strong>Link:</strong> <a href="{{ article.url }}" target="_blank">{{ article.url }}</a></p>
+                    <p><strong>Summary:</strong> {{ article.summary }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No results found.</p>
+    {% endif %}
+</div>
+
+{% endblock %}
+
+   
+
+
+
+{% include 'footer.html' %}
+  

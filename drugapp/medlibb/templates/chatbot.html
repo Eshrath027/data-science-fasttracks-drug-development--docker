@@ -1,0 +1,205 @@
+{% load static %}
+
+{% include 'inner-page.html' %}
+
+{% block content %}
+
+<!-- chatbot/templates/chatbot.html -->
+{% comment %} {% comment %} <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+</head>
+<body>
+    <h1>Chatbot</h1>
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="question" placeholder="Enter your question...">
+        <button type="submit">Ask</button>
+    </form>
+    {% if question %}
+        <p><strong>You:</strong> {{ question }}</p>
+        <p><strong>mediLib Bot:</strong> {{ response }}</p>
+    {% endif %}
+</body>
+</html> {% endcomment %} 
+
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <style>
+
+       
+        .chat-container {
+            border: 2px solid #ccc;
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 80px;
+            max-width: 900px;
+            overflow-y: auto;
+            height: auto; /* Adjust height as needed */
+            margin: 0 auto; /* Center the container horizontally */
+        }
+        /* User message styles */
+        .user-message {
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 5px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        /* Bot message styles */
+        .bot-message {
+            background-color: #c0d5fa;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 5px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        /* Chat input styles */
+        .chat-input {
+            width: 80%; /* Adjust width as needed */
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-top: 10px;
+            box-sizing: border-box;
+        }
+        /* Send button styles */
+
+        .send-button {
+            width: 10%; /* Adjust width as needed */
+            padding: 10px;
+            border: none;
+            border-radius: 40px; /* Use a large border-radius to create an oval shape */
+            background-color: #1977cc;
+            color: white;
+            cursor: pointer;
+            margin-top: 10px;
+            margin-left: -50px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div id="chat-box"></div>
+        <div style="display: flex;">
+            <input type="text" id="user-input" class="chat-input" placeholder="Type your message...">
+            <button onclick="sendMessage()" class="send-button">Send</button>
+        </div>
+    </div>
+
+    
+
+    <script>
+        const chatBox = document.getElementById('chat-box');
+        const userInput = document.getElementById('user-input');
+
+        function addUserMessage(message) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('user-message');
+            messageElement.innerText = 'You: ' + message;
+            chatBox.appendChild(messageElement);
+        }
+
+        {% comment %} function addBotMessage(message) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('bot-message');
+            messageElement.innerText = 'Bot: ' + message;
+            chatBox.appendChild(messageElement);
+        } {% endcomment %}
+
+        function addBotMessage(message) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('bot-message');
+        
+            // Split the message by newline character to separate each bullet point
+            const bulletPoints = message.split('\n');
+            // Create an unordered list element to contain the bullet points
+            const listElement = document.createElement('ul');
+            
+            // Add each bullet point as a list item
+            bulletPoints.forEach(point => {
+                const listItem = document.createElement('li');
+                listItem.textContent = point.trim(); // Remove leading/trailing whitespace
+                listElement.appendChild(listItem);
+            });
+        
+            // Append the unordered list to the message element
+            messageElement.appendChild(listElement);
+        
+            // Append the message element to the chat box
+            chatBox.appendChild(messageElement);
+        }
+        
+
+        function sendMessage() {
+            const message = userInput.value;
+            addUserMessage(message);
+            userInput.value = '';
+
+            fetch('/chatbot/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken') // Get CSRF token from cookie
+                },
+                body: JSON.stringify({ 'question': message })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                addBotMessage(data.response);
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        // Function to get CSRF token from cookie
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+</body>
+</html> 
+
+
+
+
+
+<br>
+<br>
+
+{% endblock %}
+
+   
+
+
+
+{% include 'footer.html' %}
+  

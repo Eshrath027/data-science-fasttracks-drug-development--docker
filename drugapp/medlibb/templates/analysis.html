@@ -1,0 +1,133 @@
+{% load static %}
+
+{% include 'inner-page.html' %}
+
+{% block content %}
+<style>
+    .drug-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .drug-heading {
+        color: #333;
+    }
+
+    .drug-form {
+        margin-bottom: 20px;
+    }
+
+    .drug-label {
+        font-weight: bold;
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    .drug-select, .drug-input {
+        margin-bottom: 10px;
+        padding: 8px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .drug-list {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .drug-item {
+        margin-bottom: 5px;
+    }
+
+    .drug-submit {
+        background-color:#1977cc;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+    
+    .drug-submit:hover {
+        background-color: darkblue;
+    }
+    
+
+    /* Add more styles as needed */
+</style>
+
+<div class="drug-container">
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <title><span style="color:#1977cc;">Analysis and Recommendation</span></title>
+    </head>
+    <body>
+        <h1 class="drug-heading">Analysis and recomendation</h1>
+        <p> 
+            Discovering the most effective drugs tailored to individual health conditions is at the core of our platform. Using advanced sentiment analysis techniques, we analyze patient reviews to identify the medications that best address specific health needs. This personalized approach ensures that patients receive recommendations that align closely with their unique requirements, optimizing their treatment outcomes and overall well-being.</p>
+        <form method="post" class="drug-form">
+            {% csrf_token %}
+            {% comment %} <label for="selection" class="drug-label">Select option:</label><br>
+            <select id="selection" name="selection" class="drug-select">
+                <option value="general">General</option>
+                <option value="drug">Drug Company</option>
+            </select><br>
+            <label for="condition" class="drug-label">Enter the health condition:</label><br>
+            <input type="text" id="condition" name="condition" class="drug-input"><br>
+            <input type="submit" value="Submit"> {% endcomment %}
+            <label for="selection" class="drug-label">Select option:</label><br>
+            <select id="selection" name="selection" class="drug-select">
+                <option value="" disabled selected>Select an option</option>
+                <option value="general">General</option>
+                <option value="drug">Drug Company</option>
+            </select><br>
+            <label for="condition" class="drug-label">Enter the health condition:</label><br>
+            <input type="text" id="condition" name="condition" class="drug-input" placeholder="Enter health condition"><br>
+            <input type="submit" value="Submit" class="drug-submit">
+
+        </form>
+
+        {% if unique_drugs %}
+            <h2 class="drug-heading">Unique Drugs for the Condition</h2>
+            <h3 class="drug-heading">Useful Drugs:</h3>
+            <ul class="drug-list">
+                {% for drug in unique_drugs %}
+                    <li class="drug-item">{{ drug }}{% if not forloop.last %}, {% endif %}</li>
+                {% endfor %}
+            </ul>
+            <h3 class="drug-heading">Non-Useful Drugs:</h3>
+            <ul class="drug-list">
+                {% for drug in unique_drugs %}
+                    <li class="drug-item">{{ drug }}{% if not forloop.last %}, {% endif %}</li>
+                {% endfor %}
+            </ul>
+        {% endif %} 
+
+        {% if top_five_drugs_label_0 %}
+            <h2 class="drug-heading">Top Five Drugs which are not so effective </h2>
+            <ul class="drug-list">
+                {% for drug, count in top_five_drugs_label_0 %}
+                    <li class="drug-item">Drug Name: {{ drug }} - Useful Count: {{ count }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if top_five_drugs_label_1 %}
+            <h2 class="drug-heading">Top Five Drugs which are effective</h2>
+            <ul class="drug-list">
+                {% for drug, count in top_five_drugs_label_1 %}
+                    <li class="drug-item">Drug Name: {{ drug }} - Useful Count: {{ count }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </body>
+    </html>
+</div>
+{% endblock %}
+
+{% include 'footer.html' %}
