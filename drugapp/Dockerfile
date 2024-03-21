@@ -14,4 +14,4 @@ RUN pip3 install newspaper3k==0.2.8
 
 COPY . /djangodrugapp
 
-CMD python manage.py runserver 0.0.0.0:8000
+CMD python manage.py migrate && python manage.py runserver 0.0.0.0:8000

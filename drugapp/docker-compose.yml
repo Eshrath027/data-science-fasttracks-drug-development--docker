@@ -1,14 +1,40 @@
-version: '3'
+# version: '3'
+
+# services:
+#   app:
+#     build: .
+#     volumes:
+#       - .:/djangodrugapp
+#       # Add a volume to mount the directory containing drugsenti.csv into the container
+#       - ./drugapp/medlibb:/djangodrugapp/drugapp/medlibb
+#     ports:
+#       - "8000:8000"
+#     image: app:djangodrugapp
+#     container_name: my_django_container
+#     command: python manage.py runserver 0.0.0.0:8000
+
+#     version: '3'
 
 services:
   app:
     build: .
     volumes:
       - .:/djangodrugapp
-      # Add a volume to mount the directory containing drugsenti.csv into the container
       - ./drugapp/medlibb:/djangodrugapp/drugapp/medlibb
     ports:
       - "8000:8000"
     image: app:djangodrugapp
     container_name: my_django_container
     command: python manage.py runserver 0.0.0.0:8000
+    depends_on:
+      - db
+
+  db:
+    image: postgres:latest
+    container_name: postgres_container
+    environment:
+      POSTGRES_DB: ${SQL_NAME}
+      POSTGRES_USER:  ${SQL_USER}
+      POSTGRES_PASSWORD: ${SQL_PASSWORD}
+    ports:
+      - "5432:5432"
