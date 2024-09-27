@@ -64,6 +64,16 @@ import nltk
 nltk.download('stopwords')
 nltk.download('punkt')
 
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Now you can access the environment variables like this
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+API_URL = os.getenv("API_URL")
+API_KEY = os.getenv("API_KEY")
+
 # from googlesearch import search
 
 
@@ -126,7 +136,7 @@ def summarize_url_content(url, num_sentences=3):
 def fetch_latest_news_articles(query, num_articles):
     try:
         
-        full_api_url = f"{creds.api_url}?apiKey={creds.api_key}"
+        full_api_url = f"{API_URL}?apiKey={API_KEY}"
         
         # Make a GET request to the API endpoint
         response = requests.get(full_api_url, params={'q': query, 'pageSize': num_articles})
@@ -173,7 +183,7 @@ import google.generativeai as genai
 
 # Configure the API key
 
-genai.configure(api_key=creds.GOOGLE_API_KEY)
+genai.configure(api_key=GOOGLE_API_KEY)
 
 
 #original chatbotcode
@@ -312,8 +322,8 @@ import pandas as pd
 
 
 # Load the DataFrame
-# df = pd.read_csv(r"D:\data-science-fasttracks-drug-development--docker\drugapp\medlibb\drugsenti.csv")
-df = pd.read_csv(r"/djangodrugapp/medlibb/drugsenti.csv")
+df = pd.read_csv(r"D:\data-science-fasttracks-drug-development--docker\drugapp\medlibb\drugsenti.csv")
+# df = pd.read_csv(r"/djangodrugapp/medlibb/drugsenti.csv")
 
 def find_unique_drugs_for_condition(user_condition, df):
     user_condition = user_condition.lower()
