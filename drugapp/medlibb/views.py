@@ -322,7 +322,7 @@ import pandas as pd
 
 
 # Load the DataFrame
-df = pd.read_csv(r"D:\data-science-fasttracks-drug-development--docker\drugapp\medlibb\drugsenti.csv")
+df = pd.read_csv(r"E:\data-science-fasttracks-drug-development--docker\drugapp\medlibb\drugsenti.csv")
 # df = pd.read_csv(r"/djangodrugapp/medlibb/drugsenti.csv")
 
 def find_unique_drugs_for_condition(user_condition, df):
