@@ -5,6 +5,12 @@ from .models import *
 from django.contrib.auth.models import User, auth
 from django.contrib.auth import login as auth_login
 from django.contrib import messages
+from django.urls import reverse
+from dotenv import load_dotenv
+from pydantic import BaseModel
+from langchain_anthropic import ChatAnthropic
+from langchain_core.messages import HumanMessage
+from django.views.decorators.csrf import ensure_csrf_cookie,csrf_exempt
 
 # Get the current directory of the Django project
 # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -124,23 +130,23 @@ def summarize_url_content(url, num_sentences=3):
         article.download()
         article.parse()
         text = article.text
-        
+
         # Generate summary
         summary = generate_summary(text, num_sentences)
         return summary
     except Exception as e:
         return f"Error: {str(e)}"
-    
-    
+
+
 
 def fetch_latest_news_articles(query, num_articles):
     try:
-        
+
         full_api_url = f"{API_URL}?apiKey={API_KEY}"
-        
+
         # Make a GET request to the API endpoint
         response = requests.get(full_api_url, params={'q': query, 'pageSize': num_articles})
-        
+
         # Check if the request was successful (status code 200)
         if response.status_code == 200:
             # Extract the response data (assuming JSON response)
@@ -161,14 +167,14 @@ def news_articles_view(request):
     query = request.GET.get('query', '')
     # query = f"recent medical articles about {query_param}" if query_param else None
     num_articles = 10
-    
+
     if query:
         user_query = UserQuery(query_text=query)
         user_query.save()
     # Fetch latest news articles based on the query and number of articles
     articles = fetch_latest_news_articles(query, num_articles)
-    
-    
+
+
     for article in articles:
         summary=  summarize_url_content(article['url'], 5)
         article["summary"]= summary
@@ -195,9 +201,9 @@ genai.configure(api_key=GOOGLE_API_KEY)
 #         data = data.decode('utf-8')
 #         data = json.loads(data)
 #         question= data['question']
-        
+
 #         response = request.POST.get('response')
-    
+
 #         if question:
 #             try:
 #                 model = genai.GenerativeModel('gemini-pro')
@@ -211,32 +217,40 @@ genai.configure(api_key=GOOGLE_API_KEY)
 #     # return render(request, 'chatbot.html')
 #     return render(request, 'chatbot.html', {'page_name': page_name})
 
+
+# @ensure_csrf_cookie
+@csrf_exempt
 def chatbot(request):
     page_name = 'Chatbot'
+    print("Request method:", request.method)
+
+    # Handle POST request (API call)
     if request.method == 'POST':
         try:
-            # Extract data from the request
             data = json.loads(request.body.decode('utf-8'))
             question = data.get('question')
-            
-            # Start chat and get response
-            model = genai.GenerativeModel('gemini-pro')
-            chat = model.start_chat(history=[])
-            response = chat.send_message(question)
-            response_text = response.text
-            # response_text = response.text.replace('*', '') 
-            
-            # Save the chat conversation to the database
-            if question:
-                user_chat = UserChat(question=question, response=response_text)
-                user_chat.save()
-                
-            return JsonResponse({'response': response_text})  # Return JSON response
-        except Exception as e:
-            # Handle any errors and return an error response
-            return JsonResponse({'error': str(e)}, status=500)
-    return render(request, 'chatbot.html', {'page_name': page_name})
 
+            if not question:
+                return JsonResponse({'error': 'No question provided'}, status=400)
+
+            # Process with Anthropic Claude
+            llm = ChatAnthropic(model="claude-3-5-sonnet-20241022")
+            response = llm.invoke([HumanMessage(content=question)])
+            response_text = response.content
+            print("Response:", response_text)
+
+            # Save the chat conversation to the database
+            user_chat = UserChat(question=question, response=response_text)
+            user_chat.save()
+
+            return JsonResponse({'response': response_text})
+
+        except Exception as e:
+            print("Error:", str(e))
+            return JsonResponse({'error': str(e)}, status=500)
+
+    # For GET requests, just render the template
+    return render(request, 'chatbot.html', {'page_name': page_name})
 
 
 
@@ -281,7 +295,7 @@ def ddi(request):
         drug1 = request.POST.get('drug1')
         drug2 = request.POST.get('drug2')
         text = f"Can {drug1} and {drug2} be taken together?"
-        
+
         if drug1 and drug2:
             drug_interaction = DrugInteraction(drug1=drug1, drug2=drug2)
             drug_interaction.save()
@@ -290,7 +304,7 @@ def ddi(request):
         chat = model.start_chat(history=[])
         response = chat.send_message(text)
         response_text = response.text  # Assign response text if there's a response
-        response_text = response.text.replace('*', '') 
+        response_text = response.text.replace('*', '')
 
     return render(request, 'ddi.html', {'drug1': drug1, 'drug2': drug2, 'response_text': response_text})
 
@@ -316,13 +330,13 @@ def ddi(request):
 #     return render(request, 'base.html', {})
 
 
-# analysis 
+# analysis
 from django.shortcuts import render
 import pandas as pd
 
 
 # Load the DataFrame
-df = pd.read_csv(r"E:\data-science-fasttracks-drug-development--docker\drugapp\medlibb\drugsenti.csv")
+df = pd.read_csv(r"/home/eshrath/data-science-fasttracks-drug-development--docker/drugapp/medlibb/drugsenti.csv")
 # df = pd.read_csv(r"/djangodrugapp/medlibb/drugsenti.csv")
 
 def find_unique_drugs_for_condition(user_condition, df):
@@ -405,16 +419,18 @@ def login_user(request):
 
         if user is not None:
             auth.login(request, user)
-            return redirect("/")
+            # return redirect("/medilib/")
+            return redirect(reverse('index'))
         else:
             messages.info(request,'Invalid credentials')
-            return redirect('login')
+            return redirect('/medilib/login/')
+
 
     else:
-        return render(request,'login.html')    
+        return render(request,'login.html')
 
-    
-    
+
+
 def register(request):
 
     if request.method == 'POST':
@@ -432,17 +448,17 @@ def register(request):
             elif User.objects.filter(email=email).exists():
                 messages.info(request,'Email Taken')
                 return redirect('register')
-            else:   
+            else:
                 user = User.objects.create_user(username=username, password=password1, email=email,first_name=first_name,last_name=last_name)
                 user.save();
                 print('user created')
                 return redirect('login')
 
         else:
-            messages.info(request,'password not matching..')    
+            messages.info(request,'password not matching..')
             return redirect('register')
         return redirect('/')
-        
+
     else:
         return render(request,'register.html')
 
@@ -451,4 +467,4 @@ def logout_user(request):
     # messages.success(request,("You have been logged out"))
     # return redirect('index')
     auth.logout(request)
-    return redirect('/')  
+    return redirect('/medilib/')

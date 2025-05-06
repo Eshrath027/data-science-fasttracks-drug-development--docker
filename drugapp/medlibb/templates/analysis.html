@@ -48,11 +48,11 @@
         cursor: pointer;
         font-size: 16px;
     }
-    
+
     .drug-submit:hover {
         background-color: darkblue;
     }
-    
+
 
     /* Add more styles as needed */
 </style>
@@ -63,12 +63,12 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        
+
         <title><span style="color:#1977cc;">Analysis and Recommendation</span></title>
     </head>
     <body>
         <h1 class="drug-heading">Analysis and recomendation</h1>
-        <p> 
+        <p>
             Discovering the most effective drugs tailored to individual health conditions is at the core of our platform. Using advanced sentiment analysis techniques, we analyze patient reviews to identify the medications that best address specific health needs. This personalized approach ensures that patients receive recommendations that align closely with their unique requirements, optimizing their treatment outcomes and overall well-being.</p>
         <form method="post" class="drug-form">
             {% csrf_token %}
@@ -106,7 +106,7 @@
                     <li class="drug-item">{{ drug }}{% if not forloop.last %}, {% endif %}</li>
                 {% endfor %}
             </ul>
-        {% endif %} 
+        {% endif %}
 
         {% if top_five_drugs_label_0 %}
             <h2 class="drug-heading">Top Five Drugs which are not so effective </h2>

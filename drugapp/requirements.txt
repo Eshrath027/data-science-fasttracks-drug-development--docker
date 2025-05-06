@@ -15,3 +15,11 @@ newspaper3k==0.2.8
 psycopg2
 lxml_html_clean
 python-dotenv
+langchain
+wikipedia
+langchain-community
+langchain-openai
+langchain-anthropic
+python-dotenv
+pydantic
+duckduckgo-search

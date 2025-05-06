@@ -39,7 +39,7 @@ h2 {
 	&, & .container > .row {
 		height: 100vh;
 	}
-	
+
 	.bg {
 		@include media-breakpoint-down(md) {
 			height: 500px;

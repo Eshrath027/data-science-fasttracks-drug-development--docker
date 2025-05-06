@@ -9,6 +9,6 @@ $(function() {
 	  $(this).closest('.accordion-item').removeClass('active');
 	});
 
-    
+
 
 });

@@ -13,7 +13,7 @@ class UserQuery(models.Model):
 
     def __str__(self):
         return self.query_text
-    
+
 class UserChat(models.Model):
     question = models.TextField()
     response = models.TextField()
@@ -21,7 +21,7 @@ class UserChat(models.Model):
 
     def __str__(self):
         return f'{self.question} - {self.timestamp}'
-    
+
 class DrugInteraction(models.Model):
     drug1 = models.CharField(max_length=100)
     drug2 = models.CharField(max_length=100)

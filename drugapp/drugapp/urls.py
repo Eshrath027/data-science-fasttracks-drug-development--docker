@@ -23,7 +23,12 @@ from medlibb import urls
 
 
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',include('medlibb.urls'))
+    # web application urls
+    path('medilib/',include('medlibb.urls')),
+
+    # API urls
+    path('api/v1/', include('api.urls')),
 ]+ static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

@@ -14,9 +14,14 @@
 </head>
 <body>
     <h1>Chatbot</h1>
-    <form method="post">
+    <!-- <form method="post">
         {% csrf_token %}
         <input type="text" name="question" placeholder="Enter your question...">
+        <button type="submit">Ask</button>
+    </form> -->
+    <form method="POST" action="/chatbot/">
+        {% csrf_token %}
+        <input type="text" name="question" placeholder="Type your question here...">
         <button type="submit">Ask</button>
     </form>
     {% if question %}
@@ -24,7 +29,7 @@
         <p><strong>mediLib Bot:</strong> {{ response }}</p>
     {% endif %}
 </body>
-</html> {% endcomment %} 
+</html> {% endcomment %}
 
 
 <!DOCTYPE html>
@@ -35,7 +40,7 @@
     <title>Chatbot</title>
     <style>
 
-       
+
         .chat-container {
             border: 2px solid #ccc;
             border-radius: 15px;
@@ -98,7 +103,7 @@
         </div>
     </div>
 
-    
+
 
     <script>
         const chatBox = document.getElementById('chat-box');
@@ -114,12 +119,12 @@
         function addBotMessage(message) {
             const messageElement = document.createElement('div');
             messageElement.classList.add('bot-message');
-            
+
             // Split the message by newline character to separate each bullet point
             const bulletPoints = message.split('\n');
             // Create an unordered list element to contain the bullet points
             const listElement = document.createElement('ul');
-            
+
             // Add each bullet point as a list item
             bulletPoints.forEach(point => {
                 // Remove asterisks and trim whitespace from each bullet point
@@ -128,41 +133,12 @@
                 listItem.textContent = listItemText;
                 listElement.appendChild(listItem);
             });
-            
+
             // Append the unordered list to the message element
             messageElement.appendChild(listElement);
-            
+
             // Append the message element to the chat box
             chatBox.appendChild(messageElement);
-        }
-        
-
-        function sendMessage() {
-            const message = userInput.value;
-            addUserMessage(message);
-            userInput.value = '';
-
-            fetch('/chatbot/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken') // Get CSRF token from cookie
-                },
-                body: JSON.stringify({ 'question': message })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.error) {
-                    throw new Error(data.error);
-                }
-                addBotMessage(data.response);
-            })
-            .catch(error => console.error('Error:', error));
         }
 
         // Function to get CSRF token from cookie
@@ -180,17 +156,70 @@
             }
             return cookieValue;
         }
+
+        // Ensure CSRF cookie is set on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Make a simple GET request to set the CSRF cookie
+            fetch('/medilib/chatbot/', {
+                method: 'GET',
+                credentials: 'same-origin'
+            });
+        });
+
+        function sendMessage() {
+            const message = userInput.value;
+            if (!message.trim()) return; // Don't send empty messages
+
+            addUserMessage(message);
+            userInput.value = '';
+
+            // Debug: Check if CSRF token exists
+            const csrftoken = getCookie('csrftoken');
+            console.log("CSRF Token:", csrftoken);
+
+            if (!csrftoken) {
+                console.error("CSRF token not found!");
+                addBotMessage("Error: CSRF protection issue. Please refresh the page.");
+                return;
+            }
+
+            fetch('/medilib/chatbot/', {  // Correct path with /medilib/
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                credentials: 'same-origin',  // Important for CSRF cookie handling
+                body: JSON.stringify({ 'question': message })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Network response was not ok: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                addBotMessage(data.response);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                addBotMessage("Sorry, there was an error processing your request.");
+            });
+        }
+
     </script>
 </body>
-</html> 
+</html>
 
- 
+
 
 {% endblock %}
 
-   
+
 
 
 
 {% include 'footer.html' %}
-  
